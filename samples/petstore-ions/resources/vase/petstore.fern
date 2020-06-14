@@ -1,4 +1,7 @@
-{vase/plugins             [petstore.ion]
+{vase/plugins             [petstore.ion
+                           io.pedestal.ions
+                           io.pedestal.http
+                           io.pedestal.http.body-params]
  vase/service             (fern/lit vase/service
                                     {:apis        [@petstore/v1]
                                      :service-map @http-options})
@@ -11,7 +14,7 @@
                                                              :proxy-port  8182} "petstore-ions")
 
  http-options             {:io.pedestal.http/resource-path  "/public"
-                           :io.pedestal.http/chain-provider @io.pedestal.ions/ion-provider
+                           :io.pedestal.http/chain-provider io.pedestal.ions/ion-provider
                            :io.pedestal.http/secure-headers {:content-security-policy-settings
                                                              {:object-src "none"}}}
 
@@ -22,8 +25,8 @@
                                     {:path       "/petstore/v1"
                                      :expose-api-at "/petstore/api"
                                      :on-request [@connection
-                                                  @io.pedestal.http.body-params/body-params
-                                                  @io.pedestal.http/json-body]
+                                                  io.pedestal.http.body-params/body-params
+                                                  io.pedestal.http/json-body]
                                      :routes     @petstore.v1/routes})
 
  ;; The schema used by the API
