@@ -12,6 +12,7 @@
     [io.pedestal.http :as http]
     [io.pedestal.interceptor :as i]
     [io.pedestal.ions :as provider]
+    [petstore.service :as service]
     [petstore.ion :as ion])
   (:import (clojure.lang IObj)))
 
@@ -70,6 +71,8 @@
       http/default-interceptors
       http/create-provider))
 
-(def handler (handler* (vase-service-map)))
+(def handler (handler* service/service
+                       ;(vase-service-map)
+                       ))
 
 (def app (apigw/ionize handler))
