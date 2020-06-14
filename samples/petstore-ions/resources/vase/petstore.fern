@@ -1,20 +1,21 @@
-{vase/plugins             [petstore.ion
-                           io.pedestal.ions
-                           io.pedestal.http
-                           io.pedestal.http.body-params]
+{
+ ;vase/plugins             [petstore.ion
+ ;                          io.pedestal.ions
+ ;                          io.pedestal.http
+ ;                          io.pedestal.http.body-params]
  vase/service             (fern/lit vase/service
                                     {:apis        [@petstore/v1]
                                      :service-map @http-options})
 
- connection               (fern/lit vase.datomic.ion/client {:server-type :ion
-                                                             :region      "us-east-1"
-                                                             :system      "rec-prod"
-                                                             :query-group "rec-prod"
-                                                             :endpoint    "http://entry.rec-prod.us-east-1.datomic.net:8182/"
-                                                             :proxy-port  8182} "petstore-ions")
+ ;connection               (fern/lit vase.datomic.ion/client {:server-type :ion
+ ;                                                            :region      "us-east-1"
+ ;                                                            :system      "rec-prod"
+ ;                                                            :query-group "rec-prod"
+ ;                                                            :endpoint    "http://entry.rec-prod.us-east-1.datomic.net:8182/"
+ ;                                                            :proxy-port  8182} "petstore-ions")
 
  http-options             {:io.pedestal.http/resource-path  "/public"
-                           :io.pedestal.http/chain-provider io.pedestal.ions/ion-provider
+                           ;:io.pedestal.http/chain-provider io.pedestal.ions/ion-provider
                            :io.pedestal.http/secure-headers {:content-security-policy-settings
                                                              {:object-src "none"}}}
 
@@ -24,9 +25,11 @@
  petstore/v1              (fern/lit vase/api
                                     {:path       "/petstore/v1"
                                      :expose-api-at "/petstore/api"
-                                     :on-request [@connection
-                                                  io.pedestal.http.body-params/body-params
-                                                  io.pedestal.http/json-body]
+                                     ;:on-request [
+                                     ;             ;@connection
+                                     ;             ;io.pedestal.http.body-params/body-params
+                                     ;             ;io.pedestal.http/json-body
+                                     ;             ]
                                      :routes     @petstore.v1/routes})
 
  ;; The schema used by the API
@@ -47,30 +50,38 @@
                                 {:pet/id   5
                                  :pet/name "Cerberus"})
 
- petstore.v1/routes       #{["/pet/:id" :get @petstore.v1/find-a-pet]
-                            ["/pets" :delete @petstore.v1/delete-a-pet]
-                            ["/pets" :get @petstore.v1/find-pets]
-                            ["/pets" :post @petstore.v1/add-pets]}
+ petstore.v1/routes       #{
+                            ["/" :get @petstore.v1/home]
+                            ;["/pet/:id" :get @petstore.v1/find-a-pet]
+                            ;["/pets" :delete @petstore.v1/delete-a-pet]
+                            ;["/pets" :get @petstore.v1/find-pets]
+                            ;["/pets" :post @petstore.v1/add-pets]
+                            }
 
- petstore.v1/add-pets     (fern/lit vase.datomic.cloud/transact
-                                    {:db-op      :vase/assert-entity
-                                     :properties [:pet/id
-                                                  :pet/name
-                                                  :pet/tag]})
+ petstore.v1/home         (fern/lit vase/respond
+                                    {:body "Hello world"})
 
- petstore.v1/delete-a-pet (fern/lit vase.datomic.cloud/transact
-                                    {:db-op      :vase/retract-entity
-                                     :properties [:pet/id]})
 
- petstore.v1/find-a-pet   (fern/lit vase.datomic.cloud/query
-                                    {:edn-coerce [id]
-                                     :params     [id]
-                                     :query      [:find (pull ?e [*])
-                                                  :in $ ?id
-                                                  :where [?e :pet/id ?id]]})
-
- petstore.v1/find-pets    (fern/lit vase.datomic.cloud/query
-                                    {:params []
-                                     :query  [:find (pull ?e [*])
-                                              :in $
-                                              :where [?e :pet/id ?id]]})}
+ ;petstore.v1/add-pets     (fern/lit vase.datomic.cloud/transact
+ ;                                   {:db-op      :vase/assert-entity
+ ;                                    :properties [:pet/id
+ ;                                                 :pet/name
+ ;                                                 :pet/tag]})
+ ;
+ ;petstore.v1/delete-a-pet (fern/lit vase.datomic.cloud/transact
+ ;                                   {:db-op      :vase/retract-entity
+ ;                                    :properties [:pet/id]})
+ ;
+ ;petstore.v1/find-a-pet   (fern/lit vase.datomic.cloud/query
+ ;                                   {:edn-coerce [id]
+ ;                                    :params     [id]
+ ;                                    :query      [:find (pull ?e [*])
+ ;                                                 :in $ ?id
+ ;                                                 :where [?e :pet/id ?id]]})
+ ;
+ ;petstore.v1/find-pets    (fern/lit vase.datomic.cloud/query
+ ;                                   {:params []
+ ;                                    :query  [:find (pull ?e [*])
+ ;                                             :in $
+ ;                                             :where [?e :pet/id ?id]]})
+ }
