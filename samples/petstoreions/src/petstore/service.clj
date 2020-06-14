@@ -24,12 +24,12 @@
 ;;
 (def get-client
   "Given `app-name` and `region`, the AWS Region, returns a shared Datom client."
-  (memoize (fn []
+  (memoize (fn [app-name region]
              (d/client {:server-type :ion
-                        :region      "us-east-1"
-                        :system      "req-prod"
-                        :query-group "req-prod"
-                        :endpoint    (format "http://entry.%s.%s.datomic.net:8182/" "req-prod" "us-east-1")
+                        :region      region
+                        :system      app-name
+                        :query-group app-name
+                        :endpoint    (format "http://entry.%s.%s.datomic.net:8182/" app-name region)
                         :proxy-port  8182}))))
 
 (def get-connection
@@ -54,7 +54,7 @@
     {:name  ::datomic-client-interceptor
      :enter (fn [ctx]
               (let [app-name (get-in ctx [::provider/app-info :app-name])
-                    region   "us-east-1" #_(System/getenv "AWS_REGION")
+                    region   (System/getenv "AWS_REGION")
                     client   (get-client app-name region)]
                 (assoc ctx ::client client)))}))
 
@@ -62,7 +62,7 @@
   (interceptor/interceptor
     {:name  ::datomic-conn-db-interceptor
      :enter (fn [ctx]
-              (let [db-name "petstore-ions"
+              (let [db-name  "petstore-ions" #_(get-in ctx [::provider/params :db-name])
                     conn     (get-connection (::client ctx) db-name)
                     m        {::conn conn
                               ::db   (d/db conn)}]
@@ -148,8 +148,7 @@
 (def common-interceptors [(body-params/body-params) http/json-body])
 
 (def app-interceptors
-  (into [
-         (io.pedestal.ions/datomic-params-interceptor)
+  (into [(io.pedestal.ions/datomic-params-interceptor)
          datomic-param-validation-interceptor
          datomic-client-interceptor
          datomic-conn-db-interceptor]

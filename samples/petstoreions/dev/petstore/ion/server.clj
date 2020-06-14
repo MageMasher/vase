@@ -2,7 +2,8 @@
   "Houses the implementation for running the sample locally as a pedestal service."
   (:require
     [io.pedestal.http :as http]
-    [com.cognitect.vase.api :as api]))
+    ;[com.cognitect.vase.api :as api]
+    ))
 
 (defn run-dev
       "Starts a service."
@@ -27,7 +28,7 @@
 
           http/default-interceptors
           http/dev-interceptors
-          api/execute-startups
+          ;api/execute-startups
           http/create-server
           http/start))
 
