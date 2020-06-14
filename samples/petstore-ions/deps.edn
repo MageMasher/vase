@@ -13,6 +13,23 @@
          org.slf4j/jul-to-slf4j #:mvn{:version "1.7.29"},
          org.slf4j/slf4j-api #:mvn{:version "1.7.14"},
 
+
+         ;; Overrides
+         commons-codec/commons-codec #:mvn{:version "1.13"},
+         com.datomic/client-api #:mvn{:version "0.8.49"},
+         com.cognitect/hmac-authn #:mvn{:version "0.1.195"},
+         com.datomic/client #:mvn{:version "0.8.103"},
+         com.cognitect/http-client #:mvn{:version "0.1.105"},
+         com.google.guava/guava #:mvn{:version "28.1-jre"},
+         com.datomic/client-impl-shared #:mvn{:version "0.8.80"},
+         com.cognitect/s3-creds #:mvn{:version "0.1.23"},
+         org.fressian/fressian #:mvn{:version "0.6.6"},
+         org.eclipse.jetty/jetty-client #:mvn{:version "9.4.27.v20200227"},
+         org.clojure/core.memoize #:mvn{:version "0.7.2"},
+         com.datomic/client-cloud #:mvn{:version "0.8.96"},
+         org.clojure/core.cache #:mvn{:version "0.6.5"},
+         com.amazonaws/aws-java-sdk-kms #:mvn{:version "1.11.675"},
+         com.amazonaws/aws-java-sdk-s3 #:mvn{:version "1.11.675"}
          }
  :paths ["src" "resources"]
  :mvn/repos {"datomic-cloud" {:url "s3://datomic-releases-1fc2183a/maven/releases"}
