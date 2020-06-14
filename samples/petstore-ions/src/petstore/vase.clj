@@ -8,6 +8,7 @@
     [datomic.ion.lambda.api-gateway :as apigw]
     [fern :as f]
     [fern.easy :as fe]
+    [io.pedestal.interceptor.chain :as chain]
     [io.pedestal.http :as http]
     [io.pedestal.interceptor :as i]
     [io.pedestal.ions :as provider]
@@ -63,7 +64,11 @@
 (defn handler*
   "Ion handler"
   [service-map]
-  (-> service-map api/execute-startups http/create-provider))
+  (-> service-map
+      (assoc :io.pedestal.http/chain-provider provider/ion-provider )
+      api/execute-startups
+      http/default-interceptors
+      http/create-provider))
 
 (def handler (handler* (vase-service-map)))
 
