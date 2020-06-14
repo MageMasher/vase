@@ -66,8 +66,8 @@
   "Ion handler"
   [service-map]
   (-> service-map
-      (assoc :io.pedestal.http/chain-provider provider/ion-provider )
-      api/execute-startups
+      ;(assoc :io.pedestal.http/chain-provider provider/ion-provider )
+      ;api/execute-startups
       http/default-interceptors
       http/create-provider))
 
