@@ -1,0 +1,5 @@
+{:allow    [petstore.ion/app]
+ :lambdas  {:app       {:fn petstore.ion/app
+                        :description "Exploring Ions with Pedestal"
+                        :integration :api-gateway/proxy}}
+ :app-name "rec-prod"}
